@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tracx — Know where your money goes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a08;
+      --surface: #111110;
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.15);
+      --text: #f0ede6;
+      --muted: #7a7870;
+      --accent: #b8f55a;
+      --accent-dim: rgba(184, 245, 90, 0.12);
+      --accent-text: #0a0a08;
+      --red: #ff5a5a;
+      --amber: #ffbb40;
+      --font-head: 'Syne', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── GRID BACKGROUND ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,8,0.85);
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--accent); }
+
+    .nav-badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: 100px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 7rem 1.5rem 4rem;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.75rem;
+    }
+
+    .eyebrow::before, .eyebrow::after {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+
+    h1 {
+      font-family: var(--font-head);
+      font-size: clamp(2.6rem, 8vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      max-width: 900px;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 460px;
+      line-height: 1.75;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ─── WAITLIST FORM ─── */
+    .waitlist-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 420px;
+      margin-bottom: 1rem;
+    }
+
+    .waitlist-form .form-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .waitlist-form input,
+    .waitlist-form textarea {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .waitlist-form textarea {
+      resize: vertical;
+      min-height: 60px;
+      max-height: 120px;
+      line-height: 1.5;
+    }
+
+    .waitlist-form input::placeholder,
+    .waitlist-form textarea::placeholder { color: var(--muted); }
+    .waitlist-form input:focus,
+    .waitlist-form textarea:focus { border-color: var(--accent); }
+
+    .waitlist-form button {
+      background: var(--accent);
+      color: var(--accent-text);
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      padding: 0.75rem 1.25rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .waitlist-form button:hover { opacity: 0.88; }
+    .waitlist-form button:active { transform: scale(0.97); }
+    .waitlist-form button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .waitlist-note {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    /* ─── TICKER / STATS ─── */
+    .ticker {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      padding: 0.85rem 0;
+      background: var(--surface);
+    }
+
+    .ticker-track {
+      display: flex;
+      gap: 0;
+      animation: ticker 28s linear infinite;
+      width: max-content;
+    }
+
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 2.5rem;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .ticker-item span {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .ticker-dot {
+      width: 4px;
+      height: 4px;
+      background: var(--border-strong);
+      border-radius: 50%;
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ─── FEATURES ─── */
+    .features {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 5rem 1.5rem;
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .feature-card {
+      background: var(--bg);
+      padding: 1.75rem;
+      transition: background 0.2s;
+    }
+
+    .feature-card:hover { background: var(--surface); }
+
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--accent-dim);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 16px;
+    }
+
+    .feature-title {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ─── CATEGORIES PREVIEW ─── */
+    .categories {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+
+    .cat-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .cat-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 12px;
+      color: var(--muted);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .cat-pill:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .cat-pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    /* ─── CTA SECTION ─── */
+    .cta-section {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 5rem 1.5rem 6rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .cta-section h2 {
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 2rem;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    /* ─── SUCCESS / ERROR STATE ─── */
+    .form-msg {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+    }
+
+    .form-msg.show { display: flex; }
+
+    .form-msg.success {
+      color: var(--accent);
+      border: 1px solid rgba(184,245,90,0.3);
+      background: var(--accent-dim);
+    }
+
+    .form-msg.error {
+      color: var(--red);
+      border: 1px solid rgba(255,90,90,0.3);
+      background: rgba(255,90,90,0.08);
+    }
+
+    .form-msg.warn {
+      color: var(--amber);
+      border: 1px solid rgba(255,187,64,0.3);
+      background: rgba(255,187,64,0.08);
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero > * {
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero > *:nth-child(1) { animation-delay: 0.05s; }
+    .hero > *:nth-child(2) { animation-delay: 0.15s; }
+    .hero > *:nth-child(3) { animation-delay: 0.25s; }
+    .hero > *:nth-child(4) { animation-delay: 0.35s; }
+    .hero > *:nth-child(5) { animation-delay: 0.42s; }
+    .hero > *:nth-child(6) { animation-delay: 0.48s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 520px) {
+      .waitlist-form .form-row { flex-direction: column; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="logo" href="#">Tracx<span>.</span></a>
+    <span class="nav-badge">Coming soon</span>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="eyebrow">Personal finance, reimagined</p>
+    <h1>Know exactly where your <em>money</em> goes.</h1>
+    <p class="hero-sub">
+      Tracx gives you a brutally honest picture of your spending — with zero friction, zero fluff, and no spreadsheet gymnastics.
+    </p>
+
+    <form class="waitlist-form" id="form-hero" onsubmit="handleJoin(event, 'hero')">
+      <div class="form-row">
+        <input type="text" name="name" placeholder="Your name *" required maxlength="100" autocomplete="name" />
+        <input type="email" name="email" placeholder="your@email.com *" required autocomplete="email" />
+      </div>
+      <div class="form-row">
+        <input type="tel" name="phone" placeholder="Phone (optional)" maxlength="20" autocomplete="tel" />
+      </div>
+      <textarea name="comment" placeholder="Anything you'd like us to know? (optional)" maxlength="500"></textarea>
+      <button type="submit">Join waitlist</button>
+    </form>
+
+    <div class="form-msg" id="msg-hero"></div>
+
+    <p class="waitlist-note">No spam. Early access when we launch.</p>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track" id="ticker-track">
+      <!-- duplicated for loop -->
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <p class="section-label">What makes it different</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <p class="feature-title">Log in seconds</p>
+        <p class="feature-desc">Add an expense with a single tap. No categories to hunt through, no dropdowns to wrestle with.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <p class="feature-title">12 smart categories</p>
+        <p class="feature-desc">From Food to Subscriptions — every rupee lands in the right bucket automatically based on your patterns.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <p class="feature-title">Your data, encrypted</p>
+        <p class="feature-desc">AES-256 at rest, JWT-secured API, and zero third-party ad targeting. Your finances stay private.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📈</div>
+        <p class="feature-title">Patterns, not just charts</p>
+        <p class="feature-desc">Tracx tells you what changed and why — not just that you spent more this month than last.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤝</div>
+        <p class="feature-title">Split with anyone</p>
+        <p class="feature-desc">Tag a Recipient on any expense and track what you owe — or what's owed to you — without leaving the app.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <p class="feature-title">Native mobile</p>
+        <p class="feature-desc">Built with React Native. Fast, offline-capable, and feels like it belongs on your phone.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES PREVIEW -->
+  <section class="categories">
+    <p class="section-label">Expense categories</p>
+    <div class="cat-grid">
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#b8f55a"></span>Food</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#40c8ff"></span>Transport</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#ff8c5a"></span>Housing</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#ffbb40"></span>Utilities</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#c77dff"></span>Shopping</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#ff5a5a"></span>Health</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#5affb8"></span>Entertainment</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#ff5af0"></span>Subscriptions</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#5a9fff"></span>Education</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#ffd95a"></span>Travel</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#b0b0b0"></span>Grooming</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#888780"></span>Miscellaneous</div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>Be first to know.</h2>
+    <p>We're building in public. Join the waitlist and get early access + a say in what we build next.</p>
+    <form class="waitlist-form" id="form-cta" style="margin: 0 auto 1rem;" onsubmit="handleJoin(event, 'cta')">
+      <div class="form-row">
+        <input type="text" name="name" placeholder="Your name *" required maxlength="100" autocomplete="name" />
+        <input type="email" name="email" placeholder="your@email.com *" required autocomplete="email" />
+      </div>
+      <div class="form-row">
+        <input type="tel" name="phone" placeholder="Phone (optional)" maxlength="20" autocomplete="tel" />
+      </div>
+      <textarea name="comment" placeholder="Anything you'd like us to know? (optional)" maxlength="500"></textarea>
+      <button type="submit">Get early access</button>
+    </form>
+    <div class="form-msg" id="msg-cta"></div>
+    <p class="waitlist-note">No spam. Just honest product updates.</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2025 Tracx</span>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="https://x.com/tracxapp" target="_blank">X / Twitter</a>
+      <a href="mailto:hello@tracx.dev">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    // ─── TICKER ───
+    const items = [
+      { label: 'Food & dining', val: '₹8,240 avg/month' },
+      { label: 'Transport', val: '₹3,100 avg/month' },
+      { label: 'Subscriptions', val: 'most undertracked category' },
+      { label: 'Shopping', val: '+22% Q4 spike' },
+      { label: 'Entertainment', val: '₹2,400 avg/month' },
+      { label: 'Utilities', val: 'steady, set-and-forget' },
+      { label: 'Grooming', val: 'surprisingly consistent' },
+      { label: 'Travel', val: '4x during long weekends' },
+    ];
+
+    const track = document.getElementById('ticker-track');
+    const doubled = [...items, ...items];
+    track.innerHTML = doubled.map(i => `
+      <span class="ticker-item">
+        ${i.label} &nbsp;<span>${i.val}</span>
+      </span>
+      <span class="ticker-dot"></span>
+    `).join('');
+
+    // ─── WAITLIST API ───
+    const API_URL = 'https://flux.syntaxbitlabs.com/api/v1/waitlist';
+
+    function showMsg(id, text, type) {
+      const el = document.getElementById(id);
+      el.textContent = (type === 'success' ? '✓ ' : '') + text;
+      el.className = 'form-msg show ' + type;
+    }
+
+    async function handleJoin(e, formId) {
+      e.preventDefault();
+      const form = document.getElementById('form-' + formId);
+      const btn = form.querySelector('button');
+      const msgId = 'msg-' + formId;
+      const msgEl = document.getElementById(msgId);
+
+      // Reset previous message
+      msgEl.className = 'form-msg';
+      msgEl.textContent = '';
+
+      const data = Object.fromEntries(new FormData(form));
+      // Strip empty optional fields
+      if (!data.phone) delete data.phone;
+      if (!data.comment) delete data.comment;
+
+      btn.disabled = true;
+      btn.textContent = 'Submitting…';
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+
+        const body = await res.json();
+
+        if (body.success) {
+          form.style.display = 'none';
+          showMsg(msgId, "You're on the list — we'll be in touch.", 'success');
+        } else if (res.status === 429) {
+          showMsg(msgId, body.message || 'Too many submissions. Please try again later.', 'warn');
+        } else {
+          showMsg(msgId, body.message === 'Failure' ? 'Please check your details and try again.' : (body.message || 'Something went wrong.'), 'error');
+        }
+      } catch {
+        showMsg(msgId, 'Network error — please try again.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = form.id === 'form-hero' ? 'Join waitlist' : 'Get early access';
+      }
+    }
+  </script>
+
+</body>
+</html>
