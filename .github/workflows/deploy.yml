@@ -30,8 +30,9 @@ jobs:
       - name: Prepare site
         run: |
           mkdir -p _site
-          cp tracx-landing.html _site/index.html
+          cp index.html _site/index.html
           cp CNAME _site/CNAME
+          cp -r assets _site/assets
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

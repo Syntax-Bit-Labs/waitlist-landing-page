@@ -10,17 +10,20 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0a0a08;
-      --surface: #111110;
-      --border: rgba(255,255,255,0.08);
-      --border-strong: rgba(255,255,255,0.15);
-      --text: #f0ede6;
-      --muted: #7a7870;
-      --accent: #b8f55a;
-      --accent-dim: rgba(184, 245, 90, 0.12);
-      --accent-text: #0a0a08;
-      --red: #ff5a5a;
-      --amber: #ffbb40;
+      --bg: #0b0f19;
+      --surface: #131a2b;
+      --surface-hover: #182236;
+      --border: rgba(255,255,255,0.06);
+      --border-strong: rgba(255,255,255,0.12);
+      --text: #edf0f7;
+      --muted: #6b7a90;
+      --accent: #2dd4bf;
+      --accent-dim: rgba(45, 212, 191, 0.10);
+      --accent-text: #0b0f19;
+      --cyan: #22d3ee;
+      --orange: #f59e0b;
+      --red: #ef4444;
+      --amber: #f59e0b;
       --font-head: 'Syne', sans-serif;
       --font-mono: 'IBM Plex Mono', monospace;
     }
@@ -43,8 +46,8 @@
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+        linear-gradient(rgba(45,212,191,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(45,212,191,0.03) 1px, transparent 1px);
       background-size: 48px 48px;
       pointer-events: none;
       z-index: 0;
@@ -60,7 +63,7 @@
       justify-content: space-between;
       padding: 1.25rem 2rem;
       border-bottom: 1px solid var(--border);
-      background: rgba(10,10,8,0.85);
+      background: rgba(11,15,25,0.88);
       backdrop-filter: blur(12px);
     }
 
@@ -256,6 +259,102 @@
       to { transform: translateX(-50%); }
     }
 
+    /* ─── APP PREVIEW ─── */
+    .preview {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 0;
+      overflow: hidden;
+    }
+
+    .preview .section-label {
+      max-width: 1000px;
+      margin: 0 auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    .preview-scroll {
+      display: flex;
+      gap: 24px;
+      padding: 0 calc(50vw - 480px);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .preview-scroll::-webkit-scrollbar { display: none; }
+
+    .phone-frame {
+      flex-shrink: 0;
+      width: 240px;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 2px solid var(--border-strong);
+      background: var(--surface);
+      scroll-snap-align: center;
+      transition: transform 0.3s, border-color 0.3s;
+      position: relative;
+    }
+
+    .phone-frame:hover {
+      transform: translateY(-8px);
+      border-color: var(--accent);
+    }
+
+    .phone-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .phone-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 2rem 1rem 1rem;
+      background: linear-gradient(transparent, rgba(11,15,25,0.95));
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--text);
+      letter-spacing: 0.02em;
+    }
+
+    /* ─── VIDEO DEMO ─── */
+    .demo {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 5rem 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .demo-wrap {
+      display: flex;
+      justify-content: center;
+    }
+
+    .phone-mockup {
+      width: 280px;
+      border-radius: 32px;
+      overflow: hidden;
+      border: 3px solid var(--border-strong);
+      background: #000;
+      box-shadow:
+        0 0 0 1px rgba(45,212,191,0.08),
+        0 24px 80px rgba(0,0,0,0.5),
+        0 0 120px rgba(45,212,191,0.06);
+    }
+
+    .phone-mockup video {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
     /* ─── FEATURES ─── */
     .features {
       position: relative;
@@ -430,20 +529,20 @@
 
     .form-msg.success {
       color: var(--accent);
-      border: 1px solid rgba(184,245,90,0.3);
+      border: 1px solid rgba(45,212,191,0.3);
       background: var(--accent-dim);
     }
 
     .form-msg.error {
       color: var(--red);
-      border: 1px solid rgba(255,90,90,0.3);
-      background: rgba(255,90,90,0.08);
+      border: 1px solid rgba(239,68,68,0.3);
+      background: rgba(239,68,68,0.08);
     }
 
     .form-msg.warn {
       color: var(--amber);
-      border: 1px solid rgba(255,187,64,0.3);
-      background: rgba(255,187,64,0.08);
+      border: 1px solid rgba(245,158,11,0.3);
+      background: rgba(245,158,11,0.08);
     }
 
     /* ─── ANIMATIONS ─── */
@@ -465,6 +564,9 @@
     /* ─── RESPONSIVE ─── */
     @media (max-width: 520px) {
       .waitlist-form .form-row { flex-direction: column; }
+      .phone-frame { width: 200px; }
+      .phone-mockup { width: 220px; border-radius: 24px; }
+      .preview-scroll { gap: 16px; padding: 0 1.5rem; }
       footer { flex-direction: column; gap: 1rem; text-align: center; }
     }
   </style>
@@ -504,10 +606,59 @@
 
   <!-- TICKER -->
   <div class="ticker" aria-hidden="true">
-    <div class="ticker-track" id="ticker-track">
-      <!-- duplicated for loop -->
-    </div>
+    <div class="ticker-track" id="ticker-track"></div>
   </div>
+
+  <!-- APP PREVIEW -->
+  <section class="preview">
+    <p class="section-label">A peek inside the app</p>
+    <div class="preview-scroll">
+      <div class="phone-frame">
+        <img src="assets/dashboard.png" alt="Tracx dashboard showing monthly spending and recent activity" loading="lazy" />
+        <span class="phone-label">Dashboard</span>
+      </div>
+      <div class="phone-frame">
+        <img src="assets/analytics.png" alt="Analytics view with category breakdown and spending chart" loading="lazy" />
+        <span class="phone-label">Analytics</span>
+      </div>
+      <div class="phone-frame">
+        <img src="assets/friends.png" alt="Friends view showing balances owed and settled" loading="lazy" />
+        <span class="phone-label">Friends</span>
+      </div>
+      <div class="phone-frame">
+        <img src="assets/groups.png" alt="Groups for shared expenses with roommates or trips" loading="lazy" />
+        <span class="phone-label">Groups</span>
+      </div>
+      <div class="phone-frame">
+        <img src="assets/group-detail.png" alt="Group detail with member balances and invite option" loading="lazy" />
+        <span class="phone-label">Group Detail</span>
+      </div>
+      <div class="phone-frame">
+        <img src="assets/expense-food.png" alt="Expense detail showing category, subcategory, and recipient" loading="lazy" />
+        <span class="phone-label">Expense Detail</span>
+      </div>
+      <div class="phone-frame">
+        <img src="assets/categories.png" alt="Manage categories with custom subcategories" loading="lazy" />
+        <span class="phone-label">Categories</span>
+      </div>
+      <div class="phone-frame">
+        <img src="assets/profile.png" alt="Profile and settings with session management" loading="lazy" />
+        <span class="phone-label">Profile</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO DEMO -->
+  <section class="demo">
+    <p class="section-label">See it in action</p>
+    <div class="demo-wrap">
+      <div class="phone-mockup">
+        <video autoplay muted loop playsinline>
+          <source src="assets/demo.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+  </section>
 
   <!-- FEATURES -->
   <section class="features">
@@ -550,18 +701,18 @@
   <section class="categories">
     <p class="section-label">Expense categories</p>
     <div class="cat-grid">
-      <div class="cat-pill"><span class="cat-pill-dot" style="background:#b8f55a"></span>Food</div>
-      <div class="cat-pill"><span class="cat-pill-dot" style="background:#40c8ff"></span>Transport</div>
-      <div class="cat-pill"><span class="cat-pill-dot" style="background:#ff8c5a"></span>Housing</div>
-      <div class="cat-pill"><span class="cat-pill-dot" style="background:#ffbb40"></span>Utilities</div>
-      <div class="cat-pill"><span class="cat-pill-dot" style="background:#c77dff"></span>Shopping</div>
-      <div class="cat-pill"><span class="cat-pill-dot" style="background:#ff5a5a"></span>Health</div>
-      <div class="cat-pill"><span class="cat-pill-dot" style="background:#5affb8"></span>Entertainment</div>
-      <div class="cat-pill"><span class="cat-pill-dot" style="background:#ff5af0"></span>Subscriptions</div>
-      <div class="cat-pill"><span class="cat-pill-dot" style="background:#5a9fff"></span>Education</div>
-      <div class="cat-pill"><span class="cat-pill-dot" style="background:#ffd95a"></span>Travel</div>
-      <div class="cat-pill"><span class="cat-pill-dot" style="background:#b0b0b0"></span>Grooming</div>
-      <div class="cat-pill"><span class="cat-pill-dot" style="background:#888780"></span>Miscellaneous</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#f59e0b"></span>Food</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#22d3ee"></span>Transport</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#f97316"></span>Housing</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#a855f7"></span>Utilities</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#8b5cf6"></span>Shopping</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#ef4444"></span>Health</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#ec4899"></span>Entertainment</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#06b6d4"></span>Subscriptions</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#3b82f6"></span>Education</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#10b981"></span>Travel</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#f43f5e"></span>Grooming</div>
+      <div class="cat-pill"><span class="cat-pill-dot" style="background:#6b7280"></span>Miscellaneous</div>
     </div>
   </section>
 
@@ -586,7 +737,7 @@
 
   <!-- FOOTER -->
   <footer>
-    <span>© 2025 Tracx</span>
+    <span>&copy; 2025 Tracx</span>
     <div class="footer-links">
       <a href="#">Privacy</a>
       <a href="https://x.com/tracxapp" target="_blank">X / Twitter</a>
@@ -597,11 +748,11 @@
   <script>
     // ─── TICKER ───
     const items = [
-      { label: 'Food & dining', val: '₹8,240 avg/month' },
-      { label: 'Transport', val: '₹3,100 avg/month' },
+      { label: 'Food & dining', val: '\u20B98,240 avg/month' },
+      { label: 'Transport', val: '\u20B93,100 avg/month' },
       { label: 'Subscriptions', val: 'most undertracked category' },
       { label: 'Shopping', val: '+22% Q4 spike' },
-      { label: 'Entertainment', val: '₹2,400 avg/month' },
+      { label: 'Entertainment', val: '\u20B92,400 avg/month' },
       { label: 'Utilities', val: 'steady, set-and-forget' },
       { label: 'Grooming', val: 'surprisingly consistent' },
       { label: 'Travel', val: '4x during long weekends' },
@@ -621,7 +772,7 @@
 
     function showMsg(id, text, type) {
       const el = document.getElementById(id);
-      el.textContent = (type === 'success' ? '✓ ' : '') + text;
+      el.textContent = (type === 'success' ? '\u2713 ' : '') + text;
       el.className = 'form-msg show ' + type;
     }
 
@@ -642,7 +793,7 @@
       if (!data.comment) delete data.comment;
 
       btn.disabled = true;
-      btn.textContent = 'Submitting…';
+      btn.textContent = 'Submitting\u2026';
 
       try {
         const res = await fetch(API_URL, {
@@ -655,14 +806,14 @@
 
         if (body.success) {
           form.style.display = 'none';
-          showMsg(msgId, "You're on the list — we'll be in touch.", 'success');
+          showMsg(msgId, "You're on the list \u2014 we'll be in touch.", 'success');
         } else if (res.status === 429) {
           showMsg(msgId, body.message || 'Too many submissions. Please try again later.', 'warn');
         } else {
           showMsg(msgId, body.message === 'Failure' ? 'Please check your details and try again.' : (body.message || 'Something went wrong.'), 'error');
         }
       } catch {
-        showMsg(msgId, 'Network error — please try again.', 'error');
+        showMsg(msgId, 'Network error \u2014 please try again.', 'error');
       } finally {
         btn.disabled = false;
         btn.textContent = form.id === 'form-hero' ? 'Join waitlist' : 'Get early access';
